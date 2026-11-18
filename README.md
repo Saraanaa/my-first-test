@@ -1,4 +1,6 @@
 # F.CSA313 – Software Quality Assurance & Testing
+нэр: Г. Саранчимэг 
+оюутны код: B232274001
 
 ## Lab 1: UI Automated Testing with Playwright
 
