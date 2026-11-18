@@ -16,7 +16,7 @@
 * **Testing Framework:** Playwright
 * **Runtime:** Node.js
 * **IDE:** Visual Studio Code
-* **Browser:** Chromium
+* **Browser:** Chromium, Firefox, WebKit
 * **Website:** SauceDemo
 * **Version Control:** Git / GitHub
 
@@ -123,14 +123,14 @@ page.getByText('Products')
 page.getByText('Sauce Labs Backpack')
 ```
 
-### locator()
-
-CSS selector ашиглан элементийг сонгосон.
+### getByTestId()
 
 ```typescript
-page.locator('.shopping_cart_link')
-page.locator('.shopping_cart_badge')
+page.getByTestId('shopping-cart-link')
+page.getByTestId('shopping-cart-badge')
 ```
+
+Товч, холбоос, гарчгийг accessibility role-оор; сагсны элементүүдийг тестийн зориулалтын ID-гаар сонгосон. Username болон password талбар дээр SauceDemo-ийн placeholder-уудыг ашигласан.
 
 ### Яагаад XPath ашиглаагүй вэ?
 
@@ -149,7 +149,7 @@ Assertion нь тестийн үед системээс хүлээж буй үр
 Элемент хэрэглэгчид харагдаж байгаа эсэхийг шалгана.
 
 ```typescript
-await expect(page.getByText('Products')).toBeVisible();
+await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
 ```
 
 ### toHaveURL()
@@ -165,7 +165,7 @@ await expect(page).toHaveURL(/inventory/);
 Элементийн текст зөв эсэхийг шалгана.
 
 ```typescript
-await expect(page.locator('.title')).toHaveText('Products');
+await expect(page.getByTestId('shopping-cart-badge')).toHaveText('1');
 ```
 
 ---
@@ -183,18 +183,18 @@ npx playwright test tests/mytest.spec.ts --project=chromium --trace on
 Trace файл үүссэний дараа:
 
 ```powershell
-npx playwright show-trace "trace.zip-ийн зам"
+npx playwright show-trace "test-results/mytest-Бараа-сагсанд-нэмэх-chromium/trace.zip"
 ```
 
-командыг ашиглан Trace Viewer-ийг нээсэн.
+командыг ашиглан Trace Viewer-ийг нээнэ. HTML тайлан нь `artifacts/playwright-report/` хавтаст хадгалагдана.
 
-Мөн assertion-ийг зориудаар буруу болгож:
+Assertion алдаатай үед Trace Viewer-ээр алхам, screenshot болон алдааны шалтгааныг шалгах туршилтыг дараах байдлаар хийж болно:
 
 ```typescript
-await expect(page.getByText('Products')).toHaveText('WRONG TEXT');
+await expect(page.getByRole('heading', { name: 'Products' })).toHaveText('WRONG TEXT');
 ```
 
-гэж тестийн алдаа үүсгэн, Trace Viewer дээр тест аль алхам дээр амжилтгүй болсон болон тухайн үеийн хуудасны төлөвийг шалгасан.
+Туршилтын дараа assertion-ийг зөв утгад нь буцааж, амжилттай тест болон тайланг дахин үүсгэнэ.
 
 ---
 
@@ -207,3 +207,16 @@ Playwright болон Selenium нь веб системийн автомат т�
 ## 8. Дүгнэлт
 
 Энэхүү лабораторийн ажлаар Playwright ашиглан веб системийн UI автомат тестийг амжилттай хэрэгжүүлсэн. Зөв нэвтрэх, буруу нэвтрэх болон нэвтэрсний дараа барааг сагсанд нэмэх гэсэн 3 үндсэн тестийг боловсруулсан. Тестүүдэд `getByRole()`, `getByPlaceholder()`, `getByText()` болон CSS locator ашигласан. Мөн `toBeVisible()`, `toHaveURL()`, `toHaveText()` assertion-уудыг ашиглан тестийн үр дүнг шалгасан. Trace Viewer ашиглан тестийн алхам болон зориуд үүсгэсэн алдааг шинжилсэн. Энэхүү лабораторийн ажлаар веб системийн UI-г автоматжуулан тестлэх үндсэн аргачлал болон Playwright framework-ийн хэрэглээтэй танилцсан.
+
+## 9. Төслийг ажиллуулах
+
+Node.js 20 буюу түүнээс дээш хувилбар шаардлагатай.
+
+```powershell
+npm install
+npx playwright install
+npm test
+npm run report
+```
+
+`npm test` нь Chromium, Firefox, WebKit дээрх тестүүдийг ажиллуулж HTML тайланг үүсгэнэ. Зөвхөн Chromium дээр Trace үүсгэн ажиллуулах бол `npm run test:chromium` командыг ашиглана. Алдаатай нэвтрэх тестэд хэрэглэгч амжилттай нэвтэрдэггүй тул logout хийх идэвхтэй session үүсэхгүй; нөгөө хоёр тест амжилттай дуусахдаа logout хийнэ.

@@ -2,7 +2,11 @@
   "name": "my-first-test",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium --trace on",
+    "report": "playwright show-report artifacts/playwright-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

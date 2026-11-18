@@ -1,87 +1,50 @@
 import { test, expect } from '@playwright/test';
 
-// Тест 1: Зөв username болон password ашиглан амжилттай нэвтрэх
+// Тест 1: Зөв хэрэглэгчийн мэдээллээр амжилттай нэвтэрч, дараа нь гарах.
 test('Амжилттай нэвтрэх', async ({ page }) => {
-
-  // SauceDemo веб сайтыг нээнэ
   await page.goto('https://www.saucedemo.com/');
-
-  // Username оруулна
   await page.getByPlaceholder('Username').fill('standard_user');
-
-  // Password оруулна
   await page.getByPlaceholder('Password').fill('secret_sauce');
-
-  // Login товчийг дарна
   await page.getByRole('button', { name: 'Login' }).click();
 
-  // Products текст харагдаж байгаа эсэхийг шалгана
-await expect(page.getByText('Products')).toBeVisible();
-
-  // URL inventory хуудас руу өөрчлөгдсөн эсэхийг шалгана
+  // Барааны жагсаалтын хуудас нээгдэж, гарчиг зөв болохыг шалгана.
+  await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
   await expect(page).toHaveURL(/inventory/);
 
-  // Products гарчиг зөв тексттэй эсэхийг шалгана
-  await expect(page.locator('.title')).toHaveText('Products');
-
-  // Logout хийх
+  // Тест бүр өөрийн browser context ашигладаг; амжилттай нэвтэрсэн энэ урсгалаас гарна.
   await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.getByText('Logout').click();
+  await page.getByRole('link', { name: 'Logout' }).click();
 });
 
-
-// Тест 2: Буруу password ашиглан нэвтрэх
+// Тест 2: Буруу нууц үгэнд алдааны мэдэгдэл гарч, нэвтрэхгүй байх.
 test('Амжилтгүй нэвтрэх', async ({ page }) => {
-
-  // SauceDemo веб сайтыг нээнэ
   await page.goto('https://www.saucedemo.com/');
-
-  // Зөв username оруулна
   await page.getByPlaceholder('Username').fill('standard_user');
-
-  // Буруу password оруулна
   await page.getByPlaceholder('Password').fill('wrong_password');
-
-  // Login товчийг дарна
   await page.getByRole('button', { name: 'Login' }).click();
 
-  // Алдааны message харагдаж байгаа эсэхийг шалгана
-  await expect(
-    page.getByText('Username and password do not match')
-  ).toBeVisible();
+  // Алдааны мэдэгдэл харагдаж, хэрэглэгч inventory хуудас руу шилжээгүйг шалгана.
+  await expect(page.getByRole('alert')).toContainText(
+    'Username and password do not match any user in this service',
+  );
+  await expect(page).not.toHaveURL(/inventory/);
 });
 
-
-// Тест 3: Нэвтэрсний дараа бараа сагслах
+// Тест 3: Барааг сагсанд нэмж баталгаажуулсны дараа logout хийх.
 test('Бараа сагсанд нэмэх', async ({ page }) => {
-
-  // SauceDemo веб сайтыг нээнэ
   await page.goto('https://www.saucedemo.com/');
-
-  // Login мэдээлэл оруулна
   await page.getByPlaceholder('Username').fill('standard_user');
   await page.getByPlaceholder('Password').fill('secret_sauce');
-
-  // Login хийнэ
   await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
 
-  // Products хуудас нээгдсэн эсэхийг шалгана
-  await expect(page.getByText('Products')).toBeVisible();
-
-  // Эхний барааг сагсанд нэмнэ
+  // Нэртэй locator болон test id ашиглаж бараа, сагсны төлөвийг шалгана.
   await page.getByRole('button', { name: 'Add to cart' }).first().click();
-
-  // Cart дээр 1 бараа байгаа эсэхийг шалгана
-  await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
-
-  // Shopping cart руу орно
-  // Shopping cart руу орно
-await page.locator('.shopping_cart_link').click();
-
-  // Sauce Labs Backpack сагсанд орсон эсэхийг шалгана
+  await expect(page.getByTestId('shopping-cart-badge')).toHaveText('1');
+  await page.getByTestId('shopping-cart-link').click();
   await expect(page.getByText('Sauce Labs Backpack')).toBeVisible();
 
-  // Logout хийх
+  // Сагсны хуудсаас меню нээж энэ тестийн сессийг хаана.
   await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.getByText('Logout').click();
+  await page.getByRole('link', { name: 'Logout' }).click();
 });
