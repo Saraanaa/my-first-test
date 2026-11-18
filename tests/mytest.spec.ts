@@ -8,12 +8,12 @@ test('Амжилттай нэвтрэх', async ({ page }) => {
   await page.getByRole('button', { name: 'Login' }).click();
 
   // Барааны жагсаалтын хуудас нээгдэж, гарчиг зөв болохыг шалгана.
-  await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
+  await expect(page.getByText('Products')).toBeVisible();
   await expect(page).toHaveURL(/inventory/);
 
   // Тест бүр өөрийн browser context ашигладаг; амжилттай нэвтэрсэн энэ урсгалаас гарна.
   await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.getByRole('link', { name: 'Logout' }).click();
+  await page.getByText('Logout').click();
 });
 
 // Тест 2: Буруу нууц үгэнд алдааны мэдэгдэл гарч, нэвтрэхгүй байх.
@@ -36,15 +36,15 @@ test('Бараа сагсанд нэмэх', async ({ page }) => {
   await page.getByPlaceholder('Username').fill('standard_user');
   await page.getByPlaceholder('Password').fill('secret_sauce');
   await page.getByRole('button', { name: 'Login' }).click();
-  await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
+  await expect(page.getByText('Products')).toBeVisible();
 
-  // Нэртэй locator болон test id ашиглаж бараа, сагсны төлөвийг шалгана.
+  // Нэртэй locator болон CSS selector ашиглаж бараа, сагсны төлөвийг шалгана.
   await page.getByRole('button', { name: 'Add to cart' }).first().click();
-  await expect(page.getByTestId('shopping-cart-badge')).toHaveText('1');
-  await page.getByTestId('shopping-cart-link').click();
+  await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
+  await page.locator('.shopping_cart_link').click();
   await expect(page.getByText('Sauce Labs Backpack')).toBeVisible();
 
   // Сагсны хуудсаас меню нээж энэ тестийн сессийг хаана.
   await page.getByRole('button', { name: 'Open Menu' }).click();
-  await page.getByRole('link', { name: 'Logout' }).click();
+  await page.getByText('Logout').click();
 });

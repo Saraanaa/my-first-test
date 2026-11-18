@@ -123,14 +123,14 @@ page.getByText('Products')
 page.getByText('Sauce Labs Backpack')
 ```
 
-### getByTestId()
+### locator()
 
 ```typescript
-page.getByTestId('shopping-cart-link')
-page.getByTestId('shopping-cart-badge')
+page.locator('.shopping_cart_link')
+page.locator('.shopping_cart_badge')
 ```
 
-Товч, холбоос, гарчгийг accessibility role-оор; сагсны элементүүдийг тестийн зориулалтын ID-гаар сонгосон. Username болон password талбар дээр SauceDemo-ийн placeholder-уудыг ашигласан.
+Товч, гарчгийг accessibility role болон харагдах текстээр сонгосон. Сагсны холбоос, тоолуурт SauceDemo-ийн markup-д зориулалтын accessible name эсвэл test ID байхгүй тул CSS selector ашигласан. Username болон password талбар дээр placeholder locator хэрэглэсэн.
 
 ### Яагаад XPath ашиглаагүй вэ?
 
@@ -165,7 +165,7 @@ await expect(page).toHaveURL(/inventory/);
 Элементийн текст зөв эсэхийг шалгана.
 
 ```typescript
-await expect(page.getByTestId('shopping-cart-badge')).toHaveText('1');
+await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
 ```
 
 ---
@@ -206,7 +206,7 @@ Playwright болон Selenium нь веб системийн автомат т�
 
 ## 8. Дүгнэлт
 
-Энэхүү лабораторийн ажлаар Playwright ашиглан веб системийн UI автомат тестийг амжилттай хэрэгжүүлсэн. Зөв нэвтрэх, буруу нэвтрэх болон нэвтэрсний дараа барааг сагсанд нэмэх гэсэн 3 үндсэн тестийг боловсруулсан. Тестүүдэд `getByRole()`, `getByPlaceholder()`, `getByText()` болон CSS locator ашигласан. Мөн `toBeVisible()`, `toHaveURL()`, `toHaveText()` assertion-уудыг ашиглан тестийн үр дүнг шалгасан. Trace Viewer ашиглан тестийн алхам болон зориуд үүсгэсэн алдааг шинжилсэн. Энэхүү лабораторийн ажлаар веб системийн UI-г автоматжуулан тестлэх үндсэн аргачлал болон Playwright framework-ийн хэрэглээтэй танилцсан.
+Энэхүү лабораторийн ажлаар Playwright ашиглан веб системийн UI автомат тестийг хэрэгжүүлсэн. Зөв нэвтрэх, буруу нэвтрэх болон нэвтэрсний дараа барааг сагсанд нэмэх гэсэн 3 үндсэн тестийг боловсруулсан. Тестүүдэд `getByRole()`, `getByPlaceholder()`, `getByText()` болон шаардлагатай газарт CSS locator ашигласан. Мөн `toBeVisible()`, `toHaveURL()`, `toHaveText()` assertion-уудыг ашиглан үр дүнг шалгасан. Trace Viewer болон HTML тайлан нь тестийн алхам, үр дүнг шинжлэхэд тусална. Энэхүү ажлаар вебийн UI тестийг автоматжуулах үндсэн аргачлалтай танилцсан.
 
 ## 9. Төслийг ажиллуулах
 
